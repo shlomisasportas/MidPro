@@ -57,6 +57,6 @@ resource "aws_instance" "jen-slave" {
   associate_public_ip_address = true
 
   tags {
-    Name            = "jen-slave-${count.index}"
+    Name            = "consul-1"
   }
 }
