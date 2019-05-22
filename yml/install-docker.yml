@@ -1,6 +1,6 @@
 ---
 - name: Install docker
-  hosts: do
+  hosts: k8s
   become: true
 
   tasks:
