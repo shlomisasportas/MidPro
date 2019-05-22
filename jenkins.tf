@@ -7,15 +7,7 @@ variable "jen-master-count" {
 }
 
 variable "ami" {
-        default = "ami-0a313d6098716f372"
-}
-
-variable image-flavor {
-        default = "t2.micro"
-}
-
-variable key-pair {
-        default = "shlomi1"
+        default = "lt-03249c832750f4acd"
 }
 
 data "aws_vpc" "MidPro" {
@@ -40,8 +32,6 @@ data "aws_security_group" "sg" {
 resource "aws_instance" "jen-master" {
   count             = "${var.jen-master-count}"
   ami               = "${var.ami}"
-  instance_type     = "${var.image-flavor}"
-  key_name          = "${var.key-pair}"
   subnet_id         = "${element(data.aws_subnet_ids.subnets.ids, count.index)}"
   vpc_security_group_ids = ["${data.aws_security_group.sg.id}"]
   associate_public_ip_address = true
