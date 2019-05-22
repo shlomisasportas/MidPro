@@ -39,4 +39,8 @@ resource "aws_instance" "jen-master" {
   tags {
     Name            = "jen-master-${count.index}"
   }
+
+  output "jenkins-ip" {
+  value = "${aws_instance.jen-masters.public_ip}"
+}
 }
