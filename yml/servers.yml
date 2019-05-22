@@ -1,0 +1,13 @@
+---
+- hostname: master
+  box: ubuntu/xenial64
+  ip_address: 10.0.1.55
+  cpus: 2
+  ram: 1024
+  playbook: k8s-master.yml
+- hostname: minion-1
+  box: ubuntu/xenial64
+  ip_address: 10.0.1.205
+  cpus: 1
+  ram: 1024
+  playbook: k8s-minion.yml
