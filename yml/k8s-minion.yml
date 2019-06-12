@@ -1,6 +1,6 @@
 ---
 - name: Install K8S master services
-  hosts: k8s-minions
+  hosts: k8s-slave
   tasks:
     - name: General | Load varibles
       include_vars:
@@ -12,9 +12,10 @@
       become_method: sudo
       
     - name: Shell 2
-      shell: kubeadm reset
+      shell: kubeadm reset --force
       become: true
       become_method: sudo
+      ignore_errors: True
 
     - name: Shell 3
       shell: systemctl daemon-reload
