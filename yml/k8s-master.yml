@@ -1,13 +1,13 @@
 ---
 - name: Install K8S master services
-  hosts: k8s
+  hosts: k8s-master
   tasks:
     - name: General | Load varibles
       include_vars:
         file: vars.yml
 
     - name: K8S | Install Master | Initialize K8S with kubeadm
-      shell: kubeadm init --token={{ kubeadm_token }} --apiserver-advertise-address={{ k8s_master_ip }} --pod-network-cidr=10.0.1.0/16
+      shell: kubeadm init --token={{ kubeadm_token }} --apiserver-advertise-address={{ k8s_master_ip }} --pod-network-cidr=10.0.0.0/16 --ignore-preflight-errors=all
       become: true
       become_method: sudo
 
@@ -34,5 +34,3 @@
 
     - name: K8S | Install Master | Install pod network
       shell: kubectl apply -f calico.yaml
-
-
