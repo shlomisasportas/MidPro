@@ -1,12 +1,37 @@
 ---
 - name: Install K8S master services
-  hosts: k8s-slave
+  hosts: k8s-minions
   tasks:
     - name: General | Load varibles
       include_vars:
         file: vars.yml
-        
+      
+    - name: Shell 1
+      shell: swapoff -a
+      become: true
+      become_method: sudo
+      
+    - name: Shell 2
+      shell: kubeadm reset
+      become: true
+      become_method: sudo
+
+    - name: Shell 3
+      shell: systemctl daemon-reload
+      become: true
+      become_method: sudo
+
+    - name: Shell 4
+      shell: systemctl restart kubelet
+      become: true
+      become_method: sudo
+    
+    - name: Shell 5
+      shell: iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X
+      become: true
+      become_method: sudo
+
     - name: K8S | Install Minion | Join K8S with kubeadm
-      shell: kubeadm join --token={{ kubeadm_token }} --discovery-token-unsafe-skip-ca-verification {{ k8s_master_ip }}:6443 
+      shell: kubeadm join --token={{ kubeadm_token }} --discovery-token-unsafe-skip-ca-verification {{ k8s_master_ip }}:6443 --ignore-preflight-errors=all 
       become: true
       become_method: sudo
