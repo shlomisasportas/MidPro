@@ -30,7 +30,7 @@
       become_method: sudo
 
     - name: K8S | Install Master | Install pod network
-      shell: kubectl apply -f /home/ubuntu/rbac.yml
+      shell: kubectl apply -f https://raw.githubusercontent.com/shlomisasportas/MidPro/master/yml/rbac.yml
 
     - name: K8S | Install Master | Install pod network
-      shell: kubectl apply -f /home/ubuntu/calico.yml
+      shell: kubectl apply -f https://raw.githubusercontent.com/shlomisasportas/MidPro/master/yml/calico.yml
