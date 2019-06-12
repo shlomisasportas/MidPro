@@ -1,6 +1,6 @@
 ---
 - name: Install K8S master services
-  hosts: k8s
+  hosts: k8s-slave
   tasks:
     - name: General | Load varibles
       include_vars:
