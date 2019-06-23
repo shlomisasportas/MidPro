@@ -1,86 +1,43 @@
-variable "ami" {
-        default = "ami-0a313d6098716f372"
-}
-
-variable image-flavor {
-        default = "t2.micro"
-}
-
-variable key-pair {
-        default = "shlomi1"
-}
-data "aws_vpc" "MidPro" {
-    tags {
-      Name = "*OpsSchool*"
-  }
-}
-
-data "aws_subnet_ids" "subnets" {
-  vpc_id = "${data.aws_vpc.MidPro.id}"
-  tags = {
-    Name = "*Mid*"
-  }
-}
-
-data "aws_security_group" "sg" {
-    tags = {
-    Name = "*Mid*"
-    }
-}
-
-resource "aws_instance" "k8s-master" {
+resource "aws_instance" "minikube" {
   count             = "1"
   ami               = "${var.ami}"
   instance_type     = "${var.image-flavor}"
+  private_ip        = "10.0.1.120"
   key_name          = "${var.key-pair}"
-  private_ip        = "10.0.1.55"
   subnet_id         = "${element(data.aws_subnet_ids.subnets.ids, count.index)}"
   vpc_security_group_ids = ["${data.aws_security_group.sg.id}"]
   associate_public_ip_address = true
+  user_data = <<-EOF
+#!/bin/bash
+sudo chmod 777 /var/tmp
+sudo curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+sudo chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+sudo apt-get update
+sudo apt-get install docker.io -y
+sudo curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
+sleep 180
+
+sudo minikube start --vm-driver=none
+sudo minikube start
+sudo cp /etc/kubernetes/admin.conf $HOME/
+sudo chown $(id -u):$(id -g) $HOME/admin.conf
+export KUBECONFIG=$HOME/admin.conf
+
+sudo kubectl apply -f https://k8s.io/examples/application/guestbook/redis-master-deployment.yaml
+sudo kubectl apply -f https://k8s.io/examples/application/guestbook/redis-master-service.yaml
+#sudo kubectl apply -f https://k8s.io/examples/application/guestbook/redis-slave-deployment.yaml
+#sudo kubectl apply -f https://k8s.io/examples/application/guestbook/redis-slave-service.yaml
+sudo kubectl apply -f https://k8s.io/examples/application/guestbook/frontend-deployment.yaml
+sudo kubectl apply -f https://k8s.io/examples/application/guestbook/frontend-service.yaml
+
+
+
+
+
+ EOF
 
   tags {
-    Name            = "k8s-master-0"
+    Name            = "minikube-1"
   }
-}
-
-resource "aws_instance" "k8s-slave" {
-  count             = "1"
-  ami               = "${var.ami}"
-  instance_type     = "${var.image-flavor}"
-  key_name          = "${var.key-pair}"
-  private_ip        = "10.0.1.205"
-  subnet_id         = "${element(data.aws_subnet_ids.subnets.ids, count.index)}"
-  vpc_security_group_ids = ["${data.aws_security_group.sg.id}"]
-  associate_public_ip_address = true
-#   user_data = <<-EOF
-# #!/bin/bash
-# sudo curl "https://raw.githubusercontent.com/shlomisasportas/MidPro/master/yml/rbac.yml" --output /home/ubuntu/rbac.yml
-# sudo curl "https://raw.githubusercontent.com/shlomisasportas/MidPro/master/yml/calico.yml" --output /home/ubuntu/calico.yml
-#  EOF
-
-  tags {
-    Name            = "k8s-slave-${count.index}"
-  }
-  #   provisioner "file" {
-  #   source = "/Users/sasportas/Documents/MidPro/Step2/calico.yml"
-  #   destination = "/home/ubuntu/calico.yml"
-  # }
-
-  # connection {
-  #   user = "ubuntu"
-  #   type = "ssh"
-  #   private_key = "${file("/Users/sasportas/Documents/MidPro/Step1/shlomi1.pem")}"
-  #   }
-
-  #   provisioner "file" {
-  #   source = "/Users/sasportas/Documents/MidPro/Step2/rbac.yml"
-  #   destination = "/home/ubuntuד/rbac.yml"
-  # }
-
-  # connection {
-  #   user = "ubuntu"
-  #   type = "ssh"
-  #   private_key = "${file("/Users/sasportas/Documents/MidPro/Step1/shlomi1.pem")}"
-  #   }
-
 }
