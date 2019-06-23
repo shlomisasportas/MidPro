@@ -16,13 +16,18 @@ sudo mv ./kubectl /usr/local/bin/kubectl
 sudo apt-get update
 sudo apt-get install docker.io -y
 sudo curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
-sudo minikube start --vm-driver=none
-sleep 60
+sleep 180
+
+#sudo minikube start --vm-driver=none
+sudo minikube start
+sudo cp /etc/kubernetes/admin.conf $HOME/
+sudo chown $(id -u):$(id -g) $HOME/admin.conf
+export KUBECONFIG=$HOME/admin.conf
 
 sudo kubectl apply -f https://k8s.io/examples/application/guestbook/redis-master-deployment.yaml
 sudo kubectl apply -f https://k8s.io/examples/application/guestbook/redis-master-service.yaml
-sudo kubectl apply -f https://k8s.io/examples/application/guestbook/redis-slave-deployment.yaml
-sudo kubectl apply -f https://k8s.io/examples/application/guestbook/redis-slave-service.yaml
+#sudo kubectl apply -f https://k8s.io/examples/application/guestbook/redis-slave-deployment.yaml
+#sudo kubectl apply -f https://k8s.io/examples/application/guestbook/redis-slave-service.yaml
 sudo kubectl apply -f https://k8s.io/examples/application/guestbook/frontend-deployment.yaml
 sudo kubectl apply -f https://k8s.io/examples/application/guestbook/frontend-service.yaml
 
