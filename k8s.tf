@@ -3,7 +3,7 @@ variable "ami" {
 }
 
 variable image-flavor {
-        default = "t2.meduim"
+        default = "t2.micro"
 }
 
 variable key-pair {
@@ -45,7 +45,7 @@ resource "aws_instance" "k8s-master" {
 
 resource "aws_instance" "k8s-slave" {
   count             = "1"
-  ami               = "t2.micro"
+  ami               = "${var.ami}"
   instance_type     = "${var.image-flavor}"
   key_name          = "${var.key-pair}"
   private_ip        = "10.0.1.205"
