@@ -19,6 +19,7 @@ sudo curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/m
 sleep 180
 
 sudo minikube start --vm-driver=none
+sudo minikube start --vm-driver=none
 #sudo minikube start
 sudo cp /etc/kubernetes/admin.conf $HOME/
 sudo chown $(id -u):$(id -g) $HOME/admin.conf
