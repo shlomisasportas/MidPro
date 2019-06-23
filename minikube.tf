@@ -18,8 +18,8 @@ sudo apt-get install docker.io -y
 sudo curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
 sleep 180
 
-#sudo minikube start --vm-driver=none
-sudo minikube start
+sudo minikube start --vm-driver=none
+#sudo minikube start
 sudo cp /etc/kubernetes/admin.conf $HOME/
 sudo chown $(id -u):$(id -g) $HOME/admin.conf
 export KUBECONFIG=$HOME/admin.conf
