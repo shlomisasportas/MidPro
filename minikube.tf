@@ -14,6 +14,19 @@ data "aws_vpc" "MidPro" {
       Name = "*OpsSchool*"
   }
 }
+
+data "aws_subnet_ids" "subnets" {
+  vpc_id = "${data.aws_vpc.MidPro.id}"
+  tags = {
+    Name = "*Mid*"
+  }
+}
+
+data "aws_security_group" "sg" {
+    tags = {
+    Name = "*Mid*"
+    }
+}
 resource "aws_instance" "minikube" {
   count             = "1"
   ami               = "${var.ami}"
