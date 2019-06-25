@@ -1,3 +1,19 @@
+variable "ami" {
+        default = "ami-0a313d6098716f372"
+}
+
+variable image-flavor {
+        default = "t2.micro"
+}
+
+variable key-pair {
+        default = "shlomi1"
+}
+data "aws_vpc" "MidPro" {
+    tags {
+      Name = "*OpsSchool*"
+  }
+}
 resource "aws_instance" "minikube" {
   count             = "1"
   ami               = "${var.ami}"
@@ -21,6 +37,14 @@ sleep 180
 sudo minikube start --vm-driver=none
 sudo minikube start --vm-driver=none
 #sudo minikube start
+sudo cp /etc/kubernetes/admin.conf $HOME/
+sudo chown $(id -u):$(id -g) $HOME/admin.conf
+export KUBECONFIG=$HOME/admin.conf
+
+sudo cp /etc/kubernetes/admin.conf $HOME/
+sudo chown $(id -u):$(id -g) $HOME/admin.conf
+export KUBECONFIG=$HOME/admin.conf
+
 sudo cp /etc/kubernetes/admin.conf $HOME/
 sudo chown $(id -u):$(id -g) $HOME/admin.conf
 export KUBECONFIG=$HOME/admin.conf
