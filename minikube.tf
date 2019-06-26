@@ -14,6 +14,21 @@ data "aws_vpc" "MidPro" {
       Name = "*OpsSchool*"
   }
 }
+
+data "aws_subnet_ids" "subnets" {
+  vpc_id = "${data.aws_vpc.MidPro.id}"
+  tags = {
+    Name = "*Mid*"
+  }
+  depends_on = ["aws_instance.ansible"]
+}
+
+data "aws_security_group" "sg" {
+    tags = {
+    Name = "*Mid*"
+    }
+    depends_on = ["aws_instance.ansible"]
+}
 resource "aws_instance" "minikube" {
   count             = "1"
   ami               = "${var.ami}"
