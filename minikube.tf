@@ -3,7 +3,7 @@ variable "ami" {
 }
 
 variable image-flavor {
-        default = "t2.micro"
+        default = "t2.medium"
 }
 
 variable key-pair {
