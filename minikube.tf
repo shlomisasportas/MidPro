@@ -20,14 +20,12 @@ data "aws_subnet_ids" "subnets" {
   tags = {
     Name = "*Mid*"
   }
-  depends_on = ["aws_instance.ansible"]
 }
 
 data "aws_security_group" "sg" {
     tags = {
     Name = "*Mid*"
     }
-    depends_on = ["aws_instance.ansible"]
 }
 resource "aws_instance" "minikube" {
   count             = "1"
